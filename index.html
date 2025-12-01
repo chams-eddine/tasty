@@ -3,24 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tasty Burger - Kitchen Order</title>
+    <title>Tasty Burger - Genius Order Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #FFD600; /* Tasty Burger Yellow */
-            --dark: #1a1a1a;
+            --primary: #FFD700; /* Tasty Burger Yellow */
+            --dark: #000000;
             --light: #ffffff;
-            --gray: #f4f4f4;
             --text-dark: #333;
+            --success: #25D366; /* WhatsApp Green */
+            --danger: #D32F2F;
         }
 
         body {
             font-family: 'Cairo', sans-serif;
-            background-color: var(--gray);
+            background-color: var(--dark); /* Black background */
+            color: var(--light);
             margin: 0;
             padding-bottom: 100px;
         }
+
+        /* Utility Classes */
+        .shadow-glow { box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+        .hidden { display: none !important; }
 
         /* Header */
         header {
@@ -31,34 +37,32 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(255, 215, 0, 0.2);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
         }
 
-        header h1 {
-            margin: 0;
-            font-size: 1.5rem;
-        }
+        header h1 { margin: 0; font-size: 1.6rem; font-weight: 900; }
 
         /* Category Tabs */
         .categories {
             display: flex;
             overflow-x: auto;
-            background: white;
-            padding: 10px;
+            background: #111;
+            padding: 10px 15px;
             gap: 10px;
             position: sticky;
             top: 60px;
             z-index: 99;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
         .cat-btn {
-            background: none;
-            border: 1px solid #ddd;
+            background: #222;
+            color: var(--light);
+            border: 1px solid #444;
             padding: 8px 15px;
             border-radius: 20px;
             white-space: nowrap;
@@ -77,48 +81,76 @@
         .menu-container {
             padding: 15px;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
         }
 
         .menu-item {
-            background: white;
+            background: #111;
             border-radius: 12px;
             padding: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 0 5px rgba(255, 215, 0, 0.1);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            border-left: 5px solid var(--primary);
+            border: 2px solid #333;
         }
 
         .item-name {
             font-weight: bold;
-            font-size: 1.1rem;
-            color: var(--text-dark);
+            font-size: 1.2rem;
+            color: var(--primary);
             margin-bottom: 5px;
         }
 
         .item-price {
-            color: #666;
+            color: #ccc;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        /* Spicy Toggle */
+        .spicy-selector {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 8px;
+            background: #222;
+            border-radius: 8px;
+            border: 1px dashed #444;
+        }
+
+        .spicy-selector label {
+            color: #aaa;
+            font-weight: normal;
+        }
+
+        .spicy-selector input[type="checkbox"]:checked + label {
+            color: var(--danger);
             font-weight: bold;
         }
 
+        .spicy-selector input[type="checkbox"] {
+            accent-color: var(--danger);
+        }
+
+
         .add-btn {
-            background-color: var(--dark);
-            color: var(--primary);
+            background-color: var(--primary);
+            color: var(--dark);
             border: none;
-            padding: 8px;
+            padding: 10px;
             border-radius: 6px;
             margin-top: 10px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 900;
+            font-size: 1rem;
             width: 100%;
+            transition: 0.2s;
         }
 
-        .add-btn:active {
-            transform: scale(0.98);
-        }
+        .add-btn:active { transform: scale(0.98); background-color: #e5c300; }
 
         /* Cart Floating Bar */
         .cart-bar {
@@ -129,7 +161,7 @@
             background: var(--dark);
             color: white;
             padding: 15px;
-            box-shadow: 0 -4px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 -4px 10px rgba(255, 215, 0, 0.4);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -138,8 +170,8 @@
         }
 
         .cart-total {
-            font-size: 1.2rem;
-            font-weight: bold;
+            font-size: 1.3rem;
+            font-weight: 900;
             color: var(--primary);
         }
 
@@ -151,6 +183,7 @@
             border: none;
             font-weight: bold;
             cursor: pointer;
+            transition: 0.2s;
         }
 
         /* Modal */
@@ -161,14 +194,14 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.8);
             z-index: 2000;
             justify-content: center;
             align-items: flex-end;
         }
 
         .modal-content {
-            background: white;
+            background: #111;
             width: 100%;
             max-width: 500px;
             border-radius: 20px 20px 0 0;
@@ -176,19 +209,24 @@
             max-height: 80vh;
             overflow-y: auto;
             animation: slideUp 0.3s ease-out;
+            border-top: 5px solid var(--primary);
         }
 
-        @keyframes slideUp {
-            from {transform: translateY(100%);}
-            to {transform: translateY(0);}
-        }
+        @keyframes slideUp { from {transform: translateY(100%);} to {transform: translateY(0);} }
 
         .cart-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #eee;
-            padding: 10px 0;
+            border-bottom: 1px dashed #333;
+            padding: 12px 0;
+        }
+        
+        .item-details .modifier {
+            color: var(--danger);
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-left: 5px;
         }
 
         .qty-controls {
@@ -198,37 +236,19 @@
         }
 
         .qty-btn {
-            width: 25px;
-            height: 25px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
-            border: 1px solid #ddd;
-            background: white;
+            border: 1px solid var(--primary);
+            background: #222;
+            color: var(--primary);
             cursor: pointer;
-        }
-
-        /* Spice Toggle */
-        .spicy-control {
-            background: #ffebeb;
-            border: 1px solid #ffcccc;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .spicy-label {
-            color: #d32f2f;
             font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
         /* WhatsApp Button */
         .whatsapp-btn {
-            background-color: #25D366;
+            background-color: var(--success);
             color: white;
             width: 100%;
             padding: 15px;
@@ -248,19 +268,48 @@
             background: none;
             border: none;
             font-size: 1.5rem;
+            color: #ccc;
             position: absolute;
             right: 20px;
             top: 20px;
             cursor: pointer;
         }
 
+        /* Confirmation Toast */
+        #confirmationToast {
+            visibility: hidden; 
+            min-width: 250px;
+            margin-left: -125px;
+            background-color: var(--success);
+            color: var(--light);
+            text-align: center;
+            border-radius: 10px;
+            padding: 16px;
+            position: fixed;
+            z-index: 3000;
+            left: 50%;
+            bottom: 30px;
+            font-size: 17px;
+            box-shadow: 0 0 20px rgba(37, 211, 102, 0.7);
+        }
+
+        #confirmationToast.show {
+            visibility: visible;
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        @-webkit-keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @-webkit-keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
     </style>
 </head>
 <body>
 
     <header>
-        <i class="fas fa-hamburger"></i>
-        <h1>Tasty Burger Order</h1>
+        <i class="fas fa-hamburger shadow-glow"></i>
+        <h1>Tasty Burger Order Dashboard</h1>
     </header>
 
     <div class="categories" id="categoryContainer">
@@ -269,9 +318,9 @@
     <div class="menu-container" id="menuContainer">
         </div>
 
-    <div class="cart-bar" id="cartBar" style="display: none;">
+    <div class="cart-bar hidden" id="cartBar">
         <div>
-            <div>Total</div>
+            <div>Current Total</div>
             <div class="cart-total" id="cartTotal">0.000 OMR</div>
         </div>
         <button class="view-order-btn" onclick="openModal()">Review Order <i class="fas fa-arrow-right"></i></button>
@@ -280,32 +329,29 @@
     <div class="modal" id="orderModal">
         <div class="modal-content">
             <button class="close-modal" onclick="closeModal()">&times;</button>
-            <h2>Current Order</h2>
+            <h2 style="color:var(--primary);">Order Details</h2>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="font-weight:bold; display:block; margin-bottom:5px; color:#ccc;">Table No. / Name:</label>
+                <input type="text" id="customerName" placeholder="e.g. Table 5" style="width: 100%; padding: 10px; border: 1px solid #444; border-radius: 8px; box-sizing: border-box; background:#333; color:white;">
+            </div>
+
             <div id="cartItemsList"></div>
             
-            <div class="spicy-control">
-                <div class="spicy-label">
-                    <i class="fas fa-pepper-hot"></i> Make it Spicy?
-                </div>
-                <label class="switch">
-                    <input type="checkbox" id="spicyToggle">
-                    <span class="slider round"></span> Regular / Spicy
-                </label>
-            </div>
-
-            <div style="margin-top: 15px;">
-                <label style="font-weight:bold; display:block; margin-bottom:5px;">Table No. / Name:</label>
-                <input type="text" id="customerName" placeholder="e.g. Table 5" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
-            </div>
-
             <button class="whatsapp-btn" onclick="sendToKitchen()">
-                <i class="fab fa-whatsapp"></i> Send to Kitchen
+                <i class="fab fa-whatsapp"></i> SEND ORDER TO KITCHEN
             </button>
         </div>
     </div>
 
+    <div id="confirmationToast">
+        <i class="fas fa-check-circle"></i> Order chat opened successfully!
+    </div>
+
     <script>
-        // Data from your Menu Image
+        // --- CONFIGURATION ---
+        const KITCHEN_NUMBER = "96893288293"; 
+        
         const menuData = [
             { id: 1, name: "Beef Skewers", price: 0.200, category: "B.B.Q" },
             { id: 2, name: "Chicken Skewers", price: 0.200, category: "B.B.Q" },
@@ -332,16 +378,14 @@
             { id: 19, name: "Mineral Water", price: 0.100, category: "Drinks" }
         ];
 
-        // Kitchen Phone Number (from your profile)
-        const KITCHEN_NUMBER = "96893288293"; 
+        // --- CART LOGIC ---
+        let cart = {}; // Key: "baseId_isSpicy" (e.g., "5_true")
+        let activeCategory = "Burgers"; // Start on a popular category
 
-        let cart = {};
-        let activeCategory = "B.B.Q";
-
-        // Initialize
         function init() {
             renderCategories();
-            renderMenu("B.B.Q");
+            renderMenu(activeCategory);
+            updateCartUI();
         }
 
         function renderCategories() {
@@ -358,6 +402,7 @@
             renderMenu(cat);
         }
 
+        // Modified renderMenu to include per-item spicy toggle
         function renderMenu(category) {
             const container = document.getElementById('menuContainer');
             const items = menuData.filter(item => item.category === category);
@@ -368,27 +413,56 @@
                         <div class="item-name">${item.name}</div>
                         <div class="item-price">${item.price.toFixed(3)} OMR</div>
                     </div>
+                    
+                    ${item.category !== 'Drinks' && item.category !== 'Extras' ? `
+                    <div class="spicy-selector">
+                        <label for="spicy-check-${item.id}">
+                            <i class="fas fa-pepper-hot"></i> Spicy?
+                        </label>
+                        <input type="checkbox" id="spicy-check-${item.id}">
+                    </div>` : ''}
+
                     <button class="add-btn" onclick="addToCart(${item.id})">
-                        <i class="fas fa-plus"></i> Add
+                        <i class="fas fa-plus"></i> Add to Order
                     </button>
                 </div>
             `).join('');
         }
 
+        // Modified addToCart to handle the spicy modifier
         function addToCart(id) {
-            if (cart[id]) {
-                cart[id].qty++;
+            const item = menuData.find(i => i.id === id);
+            
+            // Check if the item has a spicy option (i.e., not a Drink/Extra)
+            const spicyCheckbox = document.getElementById(`spicy-check-${id}`);
+            const isSpicy = spicyCheckbox ? spicyCheckbox.checked : false;
+            
+            const cartKey = `${id}_${isSpicy}`;
+
+            if (cart[cartKey]) {
+                cart[cartKey].qty++;
             } else {
-                const item = menuData.find(i => i.id === id);
-                cart[id] = { ...item, qty: 1 };
+                cart[cartKey] = { 
+                    baseId: item.id, 
+                    name: item.name, 
+                    price: item.price, 
+                    isSpicy: isSpicy,
+                    qty: 1 
+                };
             }
             updateCartUI();
+            
+            // Optional: Reset checkbox after adding
+            if (spicyCheckbox) {
+                spicyCheckbox.checked = false;
+            }
         }
 
-        function updateQty(id, change) {
-            if (cart[id]) {
-                cart[id].qty += change;
-                if (cart[id].qty <= 0) delete cart[id];
+        // Modified updateQty to use the compound key
+        function updateQty(cartKey, change) {
+            if (cart[cartKey]) {
+                cart[cartKey].qty += change;
+                if (cart[cartKey].qty <= 0) delete cart[cartKey];
                 updateCartUI();
                 renderCartList(); // Re-render modal list if open
             }
@@ -399,7 +473,7 @@
             const count = Object.values(cart).reduce((sum, item) => sum + item.qty, 0);
             
             document.getElementById('cartTotal').innerText = total.toFixed(3) + " OMR";
-            document.getElementById('cartBar').style.display = count > 0 ? 'flex' : 'none';
+            document.getElementById('cartBar').classList.toggle('hidden', count === 0);
         }
 
         function openModal() {
@@ -411,54 +485,75 @@
             document.getElementById('orderModal').style.display = 'none';
         }
 
+        // Modified renderCartList to show the Spicy modifier
         function renderCartList() {
             const container = document.getElementById('cartItemsList');
-            if (Object.keys(cart).length === 0) {
-                container.innerHTML = "<p>Cart is empty</p>";
+            const itemsInCart = Object.values(cart);
+
+            if (itemsInCart.length === 0) {
+                container.innerHTML = "<p style='text-align:center; color:#888;'>Order is currently empty.</p>";
                 return;
             }
 
-            container.innerHTML = Object.values(cart).map(item => `
+            container.innerHTML = itemsInCart.map(item => `
                 <div class="cart-item">
-                    <div>
-                        <div style="font-weight:bold;">${item.name}</div>
-                        <div style="font-size:0.9rem; color:#666;">${(item.price * item.qty).toFixed(3)} OMR</div>
+                    <div class="item-details">
+                        <div style="font-weight:bold;">
+                            ${item.name} 
+                            ${item.isSpicy ? '<span class="modifier"><i class="fas fa-pepper-hot"></i> (Spicy)</span>' : ''}
+                        </div>
+                        <div style="font-size:0.9rem; color:#ccc;">${(item.price * item.qty).toFixed(3)} OMR</div>
                     </div>
                     <div class="qty-controls">
-                        <button class="qty-btn" onclick="updateQty(${item.id}, -1)">-</button>
+                        <button class="qty-btn" onclick="updateQty('${item.baseId}_${item.isSpicy}', -1)">-</button>
                         <span>${item.qty}</span>
-                        <button class="qty-btn" onclick="updateQty(${item.id}, 1)">+</button>
+                        <button class="qty-btn" onclick="updateQty('${item.baseId}_${item.isSpicy}', 1)">+</button>
                     </div>
                 </div>
             `).join('');
         }
 
+        // --- WHATSAPP & CONFIRMATION LOGIC ---
+        function showToast(message) {
+            const toast = document.getElementById("confirmationToast");
+            toast.innerHTML = message;
+            toast.className = "show";
+            setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
+        }
+
         function sendToKitchen() {
-            const isSpicy = document.getElementById('spicyToggle').checked;
-            const customerName = document.getElementById('customerName').value || "Internal";
+            const customerName = document.getElementById('customerName').value.trim() || "--- UNASSIGNED ---";
             
-            let message = `*NEW ORDER - TASTY BURGER* %0a`;
+            let message = `*🔥 NEW TASTY BURGER ORDER 🔥* %0a`;
             message += `Ref: ${customerName} %0a`;
-            message += `-----------------------%0a`;
+            message += `-----------------------------------%0a`;
             
             let total = 0;
+            
             Object.values(cart).forEach(item => {
-                message += `${item.qty}x ${item.name} %0a`;
+                const modifier = item.isSpicy ? ' (🔥 SPICY)' : '';
+                message += `${item.qty}x ${item.name}${modifier} %0a`;
                 total += item.price * item.qty;
             });
 
-            message += `-----------------------%0a`;
-            
-            if (isSpicy) {
-                message += `🔥 *SPICY* 🔥 %0a`;
-            } else {
-                message += `🧊 *REGULAR (NOT SPICY)* %0a`;
-            }
-            
-            message += `Total: ${total.toFixed(3)} OMR`;
+            message += `-----------------------------------%0a`;
+            message += `*TOTAL ESTIMATED:* ${total.toFixed(3)} OMR`;
 
             const url = `https://wa.me/${KITCHEN_NUMBER}?text=${message}`;
-            window.open(url, '_blank');
+            
+            try {
+                window.open(url, '_blank');
+                showToast(`<i class="fas fa-check-circle"></i> WhatsApp chat opened. Please press 'Send' on the next screen.`);
+                
+                // Clear the cart and reset input fields after successful send attempt
+                cart = {};
+                document.getElementById('customerName').value = '';
+                closeModal();
+                updateCartUI();
+
+            } catch (e) {
+                showToast(`<i class="fas fa-exclamation-triangle"></i> Failed to open WhatsApp. Check settings.`);
+            }
         }
 
         // Run
